@@ -116,13 +116,32 @@ async function renderReviewForm(user) {
   const textInput = el("textarea", { id: "review-text-input", rows: 3, placeholder: "Your review (optional)" });
   textInput.value = mine?.reviewText || "";
 
+  const actionButtons = [el("button", { type: "submit" }, [mine ? "Update review" : "Submit review"])];
+
+  if (mine) {
+    actionButtons.push(
+      el("button", {
+        type: "button",
+        class: "danger",
+        onclick: async () => {
+          if (!confirm("Delete your review for this movie?")) return;
+          try {
+            await api(`/api/reviews/${movieId}`, { method: "DELETE" });
+            await renderReviewForm(user);
+            await loadReviews();
+          } catch (err) {
+            alert(err.message);
+          }
+        },
+      }, ["Delete review"])
+    );
+  }
+
   const form = el("form", { class: "stacked" }, [
     el("label", {}, ["Your rating"]),
     ratingSelect,
     textInput,
-    el("div", { class: "actions" }, [
-      el("button", { type: "submit" }, [mine ? "Update review" : "Submit review"]),
-    ]),
+    el("div", { class: "actions" }, actionButtons),
   ]);
 
   form.addEventListener("submit", async (e) => {
@@ -132,6 +151,7 @@ async function renderReviewForm(user) {
         method: "POST",
         body: { movieId, rating: Number(ratingSelect.value), reviewText: textInput.value },
       });
+      await renderReviewForm(user);
       await loadReviews();
     } catch (err) {
       alert(err.message);
