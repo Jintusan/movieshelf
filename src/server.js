@@ -37,7 +37,10 @@ app.use("/api/watchlist", watchlistRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/featured", featuredRoutes);
 
-// Static frontend (plain HTML/CSS/JS, served directly - no build step)
+// Static frontend (plain HTML/CSS/JS, served directly - no build step).
+// All pages live under public/pages/, so "/" itself needs an explicit
+// redirect to the actual homepage file.
+app.get("/", (req, res) => res.redirect("/pages/index.html"));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 // Basic error handler as a safety net for anything that throws

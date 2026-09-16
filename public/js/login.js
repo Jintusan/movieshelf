@@ -12,7 +12,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
   try {
     await api("/api/auth/login", { method: "POST", body: { username, password } });
-    window.location.href = "/index.html";
+    window.location.href = "/pages/index.html";
   } catch (err) {
     errorEl.textContent = err.message;
     errorEl.hidden = false;

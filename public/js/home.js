@@ -6,7 +6,7 @@ import { renderNav } from "./nav.js";
 
 function movieCard(movie) {
   return el("div", { class: "movie-card" }, [
-    el("a", { href: `/movie.html?id=${movie.id}` }, [
+    el("a", { href: `/pages/movie.html?id=${movie.id}` }, [
       el("img", {
         src: movie.posterUrl || "https://placehold.co/200x300?text=No+Poster",
         alt: movie.title,
@@ -14,7 +14,7 @@ function movieCard(movie) {
       }),
     ]),
     el("div", { class: "body" }, [
-      el("a", { href: `/movie.html?id=${movie.id}` }, [movie.title]),
+      el("a", { href: `/pages/movie.html?id=${movie.id}` }, [movie.title]),
       el("div", { class: "meta" }, [`${formatDate(movie.releaseDate)} · ★ ${movie.voteAverage ?? "-"}`]),
     ]),
   ]);

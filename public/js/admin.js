@@ -8,7 +8,7 @@ import { renderNav } from "./nav.js";
 
 const user = await renderNav();
 if (!user || user.role !== "admin") {
-  window.location.href = "/index.html";
+  window.location.href = "/pages/index.html";
   throw new Error("not an admin");
 }
 

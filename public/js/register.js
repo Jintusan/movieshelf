@@ -13,7 +13,7 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
 
   try {
     await api("/api/auth/register", { method: "POST", body: { username, email, password } });
-    window.location.href = "/index.html";
+    window.location.href = "/pages/index.html";
   } catch (err) {
     errorEl.textContent = err.message;
     errorEl.hidden = false;

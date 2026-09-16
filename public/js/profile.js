@@ -7,17 +7,17 @@ import { renderNav } from "./nav.js";
 
 const user = await renderNav();
 if (!user) {
-  window.location.href = "/login.html";
+  window.location.href = "/pages/login.html";
   throw new Error("not logged in");
 }
 
 function movieCard(movie) {
   return el("div", { class: "movie-card" }, [
-    el("a", { href: `/movie.html?id=${movie.id}` }, [
+    el("a", { href: `/pages/movie.html?id=${movie.id}` }, [
       el("img", { src: movie.posterUrl || "https://placehold.co/200x300?text=No+Poster", alt: movie.title }),
     ]),
     el("div", { class: "body" }, [
-      el("a", { href: `/movie.html?id=${movie.id}` }, [movie.title]),
+      el("a", { href: `/pages/movie.html?id=${movie.id}` }, [movie.title]),
       el("div", { class: "meta" }, [formatDate(movie.releaseDate)]),
     ]),
   ]);
@@ -40,7 +40,7 @@ async function loadReviews() {
     ...(reviews.length
       ? reviews.map((r) =>
           el("div", { class: "review" }, [
-            el("a", { href: `/movie.html?id=${r.movie.id}` }, [r.movie.title]),
+            el("a", { href: `/pages/movie.html?id=${r.movie.id}` }, [r.movie.title]),
             el("div", { class: "stars" }, ["★".repeat(r.rating) + "☆".repeat(5 - r.rating)]),
             el("p", {}, [r.reviewText || ""]),
           ])
