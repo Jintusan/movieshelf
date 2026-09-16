@@ -2,8 +2,9 @@
 
 A small web application that lets people search movies (via the TMDB API),
 keep a personal watchlist, rate and review movies, and lets admins curate a
-"Featured Movies" collection on the homepage. Built to match the approved
-concept document (see `Concept_Document_WebTech.docx`).
+"Featured Movies" collection on the homepage. It implements the feature set,
+resource model and role concept of the approved concept document for this
+exercise.
 
 ## Tech stack
 
@@ -15,9 +16,19 @@ concept document (see `Concept_Document_WebTech.docx`).
 
 ## Dependencies and versions
 
-- Node.js **18 or newer** (tested with Node 22) — needed for the built-in `fetch()`
+- **Node.js 22 (LTS) or Node.js 24** — developed and tested with Node 22.14.0
 - npm (comes with Node.js)
 - No database server needed — SQLite is embedded, no separate installation required
+- No C++ build tools required **on Node 22 or 24**
+
+> **Please use Node 22 or 24.** The app itself runs on any Node ≥ 18, but its
+> database driver (`better-sqlite3`) ships prebuilt binaries only for the
+> current LTS lines (Node 22 and Node 24). On Node 18, 20 or 23, npm would fall
+> back to compiling the driver from C++ source, which requires Visual Studio
+> Build Tools on Windows. Check your version with `node --version`; if it is not
+> 22.x or 24.x, [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) or
+> [nvm-windows](https://github.com/coreybutler/nvm-windows) can install Node 22
+> alongside your existing version.
 
 All JavaScript dependencies are listed in `package.json` / `package-lock.json` and are installed with `npm install` (see below): `express`, `express-session`, `better-sqlite3`, `bcrypt`, `dotenv`.
 
@@ -69,17 +80,47 @@ Open that URL in a browser.
 
 On first start, a `data.sqlite` file is created automatically and the required tables are set up — no manual database setup needed.
 
-## Creating an admin account
+## Creating accounts (seed script)
 
-Public registration (`/register.html`) always creates a normal **User** account. To get an **Admin** account (needed for the "Featured Movies" feature), run this once, after `npm install` and after the server has been started at least once (so `data.sqlite` exists):
+The database file is not part of this repository, so a freshly cloned copy starts with an empty database. Registration through the web interface always creates a regular **User** account, so an **Admin** account (needed for the "Featured Movies" feature) has to be created with the seed script. Run it after `npm install` and after the server has been started at least once, so that `data.sqlite` exists.
+
+**Demo setup — recommended, creates everything in one step:**
 
 ```bash
-npm run seed:admin -- <username> <email> <password>
-# example:
-npm run seed:admin -- admin admin@example.com adminpass123
+npm run seed
 ```
 
-If the username already exists, it is promoted to admin (its password is also reset to the one you provide). Otherwise a brand-new admin account is created. Log in with these credentials at `/login.html` to access `/admin.html`.
+This creates two accounts and puts three movies into the homepage's "Featured" collection:
+
+| Role  | Username   | Password       |
+|-------|------------|----------------|
+| Admin | `admin`     | `adminpass123`  |
+| User  | `testuser`  | `testpass123`   |
+
+**Or with your own credentials:**
+
+```bash
+npm run seed -- <username> <email> <password>
+# example:
+npm run seed -- myadmin myadmin@example.com mypassword
+```
+
+This creates a single admin account. If the username already exists, that account is promoted to admin and its password is reset to the one given. Running the script again is safe in both modes.
+
+## Setting the project up on another computer
+
+Everything needed is in this repository except two things that are deliberately excluded: the installed dependencies (`node_modules/`) and the local database file with its accounts (`data.sqlite`). The API key in `.env` is excluded as well, since it is personal. To get a running copy on a different machine:
+
+```bash
+git clone <repository-url>
+cd webtech-movies-app
+npm install                     # requires Node 22 or 24, see above
+cp .env.example .env            # Windows: copy .env.example .env
+# then put your own TMDB_API_KEY into .env
+npm start                       # creates data.sqlite on first start
+```
+
+Then, in a second terminal, run `npm run seed` to create the demo accounts and featured movies. Note that the application needs internet access at runtime, because all movie data is fetched live from TMDB.
 
 ## Environment variables
 
@@ -106,7 +147,7 @@ src/
   db/
     schema.sql          SQLite table definitions
     db.js                opens data.sqlite and applies schema.sql on startup
-    seedAdmin.js         CLI script to create/promote an admin account
+    seed.js              CLI script that creates the demo accounts / an admin account
   services/
     tmdb.js              wraps all TMDB API calls + a small in-memory cache
   middleware/
@@ -118,10 +159,27 @@ src/
     reviews.js              Feature 3: rating & review (User writes, everyone reads)
     featured.js              Feature 4: featured movies (Admin curates, everyone views)
 public/
-  *.html                 one static page per screen
+  pages/                 one static HTML page per screen
   css/style.css           shared styling
   js/                      one small ES module per page, plus shared api.js / nav.js helpers
 ```
+
+## Troubleshooting
+
+**`npm install` fails with "Could not find any Visual Studio installation to use"**
+You are on a Node version without prebuilt binaries for `better-sqlite3` (see the requirements above). Check with `node --version` and switch to Node 22 or 24, then delete `node_modules` and run `npm install` again.
+
+**Movie lists stay empty / "Could not reach TMDB"**
+The `TMDB_API_KEY` in `.env` is missing, misspelled, or the machine has no internet connection. Login and registration still work in this state — only movie data is unavailable.
+
+**"Cannot find module 'dotenv'"**
+Dependencies were not installed (or the install aborted). Run `npm install` in the project folder.
+
+**`EADDRINUSE` on startup**
+Port 3000 is already in use by another process. Set a different port in `.env`, e.g. `PORT=3001`.
+
+**The admin area is not visible after logging in**
+Only accounts with the `admin` role see it. Create one with `npm run seed` (demo admin) or `npm run seed -- <username> <email> <password>`; accounts created through the registration form are always regular users.
 
 ## Notes on the external API integration
 
