@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin - Featured Movies</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎬 MovieApp</h1>
+    <nav id="nav"></nav>
+  </header>
+
+  <main>
+    <h2>Currently Featured</h2>
+    <div id="featured-grid" class="grid"></div>
+
+    <h2>Search &amp; Add a Movie</h2>
+    <form id="search-form" class="search-bar">
+      <input id="search-input" type="text" placeholder="Search movie title..." />
+      <button type="submit">Search</button>
+    </form>
+    <div id="results-grid" class="grid"></div>
+  </main>
+
+  <script type="module" src="/js/admin.js"></script>
+</body>
+</html>

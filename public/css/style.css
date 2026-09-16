@@ -1,0 +1,117 @@
+:root {
+  --bg: #0f1115;
+  --card: #1a1d24;
+  --text: #e8e8ea;
+  --muted: #9a9ea7;
+  --accent: #4f8cff;
+  --danger: #ff5f6d;
+  --border: #2a2e37;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header h1 { font-size: 1.2rem; margin: 0; }
+
+nav { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+nav a, nav .link-button {
+  color: var(--text);
+  text-decoration: none;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+nav a:hover, nav .link-button:hover { color: var(--accent); }
+.nav-user { color: var(--muted); font-size: 0.9rem; }
+
+main { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+
+h2 { font-size: 1.1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2rem; }
+
+.search-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+.search-bar input {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+button, .btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font: inherit;
+}
+button.secondary { background: var(--card); color: var(--text); }
+button.danger { background: var(--danger); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+
+.movie-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: var(--border); }
+.movie-card .body { padding: 0.6rem; flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
+.movie-card a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+.movie-card .meta { color: var(--muted); font-size: 0.8rem; }
+
+.movie-detail { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.movie-detail img { width: 260px; border-radius: 8px; }
+.movie-detail .info { flex: 1; min-width: 260px; }
+.movie-detail .badges span {
+  display: inline-block;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+  margin: 0.15rem 0.3rem 0.15rem 0;
+  color: var(--muted);
+}
+
+form.stacked { display: flex; flex-direction: column; gap: 0.7rem; max-width: 360px; }
+form.stacked input, form.stacked textarea, form.stacked select {
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+}
+
+.review {
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 0;
+}
+.review .stars { color: #ffb400; }
+.review .meta { color: var(--muted); font-size: 0.8rem; }
+
+.error { color: var(--danger); margin: 0.5rem 0; }
+.muted { color: var(--muted); }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
