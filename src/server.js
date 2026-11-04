@@ -1,56 +1,47 @@
-require("dotenv").config();
+require("dotenv").config(); // .env einlesen
 
-const path = require("path");
-const express = require("express");
-const session = require("express-session");
+const path = require("path"); // Pfade bauen
+const express = require("express"); // Webserver
+const session = require("express-session"); // Login merken
 
-require("./db/db"); // make sure the SQLite file + tables exist before anything else runs
+require("./db/db"); // Datenbank starten
 
-const authRoutes = require("./routes/auth");
-const movieRoutes = require("./routes/movies");
-const watchlistRoutes = require("./routes/watchlist");
-const reviewRoutes = require("./routes/reviews");
-const featuredRoutes = require("./routes/featured");
+const authRoutes = require("./routes/auth"); // Login/Register
+const movieRoutes = require("./routes/movies"); // TMDB-Filme
+const watchlistRoutes = require("./routes/watchlist"); // Watchlist
+const reviewRoutes = require("./routes/reviews"); // Reviews
+const featuredRoutes = require("./routes/featured"); // Featured
 
-const app = express();
+const app = express(); // Server erzeugen
 
-app.use(express.json());
+app.use(express.json()); // JSON -> req.body
 
-// Session-based login: after a successful login, req.session.user holds
-// { id, username, role }. The cookie itself only contains a session id -
-// the actual user data stays server-side.
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "dev-secret-change-me",
-    resave: false,
-    saveUninitialized: false,
+    secret: process.env.SESSION_SECRET || "dev-secret-change-me", // Cookie signieren
+    resave: false, // nur speichern bei Änderung
+    saveUninitialized: false, // Gäste: kein Cookie
     cookie: {
-      maxAge: 1000 * 60 * 60 * 4, // 4 hours
+      maxAge: 1000 * 60 * 60 * 4, // 4 Stunden
     },
   })
 );
 
-// REST API
-app.use("/api/auth", authRoutes);
-app.use("/api/movies", movieRoutes);
-app.use("/api/watchlist", watchlistRoutes);
-app.use("/api/reviews", reviewRoutes);
-app.use("/api/featured", featuredRoutes);
+app.use("/api/auth", authRoutes); // -> auth.js
+app.use("/api/movies", movieRoutes); // -> movies.js
+app.use("/api/watchlist", watchlistRoutes); // -> watchlist.js
+app.use("/api/reviews", reviewRoutes); // -> reviews.js
+app.use("/api/featured", featuredRoutes); // -> featured.js
 
-// Static frontend (plain HTML/CSS/JS, served directly - no build step).
-// All pages live under public/pages/, so "/" itself needs an explicit
-// redirect to the actual homepage file.
-app.get("/", (req, res) => res.redirect("/pages/index.html"));
-app.use(express.static(path.join(__dirname, "..", "public")));
+app.get("/", (req, res) => res.redirect("/pages/index.html")); // "/" -> Startseite
+app.use(express.static(path.join(__dirname, "..", "public"))); // Frontend ausliefern
 
-// Basic error handler as a safety net for anything that throws
-// synchronously and isn't already caught in a route.
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: "Internal server error." });
+app.use((err, req, res, next) => { // Fehler-Handler (4 Parameter)
+  console.error(err); // Fehler loggen
+  res.status(500).json({ error: "Internal server error." }); // 500 an Browser
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000; // Port aus .env
+app.listen(PORT, () => { // Server starten
+  console.log(`Server running at http://localhost:${PORT}`); // Meldung
 });

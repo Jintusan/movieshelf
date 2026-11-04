@@ -1,38 +1,35 @@
-// Renders the navigation bar and adapts it to whoever is logged in
-// (or not). Every page includes <nav id="nav"></nav> plus this script.
+import { api, el } from "./api.js"; // Werkzeuge aus api.js holen
 
-import { api, el } from "./api.js";
+export async function renderNav() { // baut die Navigationsleiste (export = andere Seiten dürfen sie aufrufen)
+  const nav = document.getElementById("nav"); // das leere <nav> der Seite holen
+  if (!nav) return; // gibt es keins: abbrechen
 
-export async function renderNav() {
-  const nav = document.getElementById("nav");
-  if (!nav) return;
+  const { user } = await api("/api/auth/me"); // Backend fragen: wer ist eingeloggt? (user oder null)
 
-  const { user } = await api("/api/auth/me");
-
-  const links = [
-    el("a", { href: "/pages/index.html" }, ["Home"]),
+  const links = [ // Liste aller Links, Home gibt es immer
+    el("a", { href: "/pages/index.html" }, ["Home"]), // Link "Home"
   ];
 
-  if (user) {
-    links.push(el("a", { href: "/pages/profile.html" }, ["My Profile"]));
-    if (user.role === "admin") {
-      links.push(el("a", { href: "/pages/admin.html" }, ["Admin"]));
+  if (user) { // eingeloggt?
+    links.push(el("a", { href: "/pages/profile.html" }, ["My Profile"])); // Profil-Link anhängen
+    if (user.role === "admin") { // nur für Admins
+      links.push(el("a", { href: "/pages/admin.html" }, ["Admin"])); // Admin-Link anhängen
     }
-    links.push(el("span", { class: "nav-user" }, [`Hi, ${user.username} (${user.role})`]));
+    links.push(el("span", { class: "nav-user" }, [`Hi, ${user.username} (${user.role})`])); // Begrüßung mit Name und Rolle
     links.push(
-      el("button", {
-        class: "link-button",
-        onclick: async () => {
-          await api("/api/auth/logout", { method: "POST" });
-          window.location.href = "/pages/index.html";
+      el("button", { // Logout-Button
+        class: "link-button", // sieht aus wie ein Link
+        onclick: async () => { // läuft erst beim Klick
+          await api("/api/auth/logout", { method: "POST" }); // Session im Backend beenden
+          window.location.href = "/pages/index.html"; // zur Startseite wechseln
         },
-      }, ["Logout"])
+      }, ["Logout"]) // Beschriftung
     );
-  } else {
-    links.push(el("a", { href: "/pages/login.html" }, ["Login"]));
-    links.push(el("a", { href: "/pages/register.html" }, ["Register"]));
+  } else { // nicht eingeloggt
+    links.push(el("a", { href: "/pages/login.html" }, ["Login"])); // Login-Link
+    links.push(el("a", { href: "/pages/register.html" }, ["Register"])); // Register-Link
   }
 
-  nav.replaceChildren(...links);
-  return user;
+  nav.replaceChildren(...links); // Leiste leeren und alle Links einsetzen
+  return user; // User zurückgeben (andere Seiten nutzen ihn)
 }

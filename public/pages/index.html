@@ -1,35 +1,35 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MovieApp</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/css/style.css" />
+<!doctype html>                                             <!-- sagt dem Browser: das ist modernes HTML5 -->
+<html lang="en">                                            <!-- Wurzel der Seite, Sprache Englisch -->
+<head>                                                      <!-- unsichtbarer Kopfbereich: Einstellungen für den Browser -->
+  <meta charset="utf-8" />                                  <!-- Zeichensatz, damit Umlaute und Sonderzeichen stimmen -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  <!-- passt die Seite an Handy-Bildschirme an -->
+  <title>MovieApp</title>                                   <!-- Text im Browser-Tab -->
+  <link rel="icon" href="data:,">                           <!-- leeres Tab-Icon, verhindert eine Fehlermeldung wegen fehlendem favicon -->
+  <link rel="stylesheet" href="/css/style.css" />           <!-- bindet das Aussehen (CSS) ein -->
 </head>
-<body>
-  <header>
-    <h1>🎬 MovieApp</h1>
-    <nav id="nav"></nav>
+<body>                                                      <!-- sichtbarer Bereich der Seite -->
+  <header>                                                  <!-- Kopfzeile -->
+    <h1>🎬 MovieApp</h1>                                    <!-- Titel -->
+    <nav id="nav"></nav>                                    <!-- leer: nav.js füllt hier die Navigationsleiste -->
   </header>
 
-  <main>
-    <section id="featured-section" hidden>
-      <h2>Featured on Homepage</h2>
-      <div id="featured-grid" class="grid"></div>
+  <main>                                                    <!-- Hauptinhalt -->
+    <section id="featured-section" hidden>                  <!-- Featured-Bereich, anfangs versteckt (home.js zeigt ihn, wenn es Filme gibt) -->
+      <h2>Featured on Homepage</h2>                         <!-- Überschrift -->
+      <div id="featured-grid" class="grid"></div>           <!-- leer: home.js setzt hier die Featured-Karten ein, class grid = Raster -->
     </section>
 
-    <section>
-      <h2>Find a Movie</h2>
-      <form id="search-form" class="search-bar">
-        <input id="search-input" type="text" placeholder="Search movie title..." />
-        <button type="submit">Search</button>
+    <section>                                               <!-- Such-Bereich -->
+      <h2>Find a Movie</h2>                                 <!-- Überschrift -->
+      <form id="search-form" class="search-bar">            <!-- Suchformular, home.js hängt sich ans submit-Ereignis -->
+        <input id="search-input" type="text" placeholder="Search movie title..." />  <!-- Eingabefeld mit Platzhaltertext -->
+        <button type="submit">Search</button>               <!-- Button zum Absenden -->
       </form>
-      <p id="results-label" class="muted">Popular right now</p>
-      <div id="results-grid" class="grid"></div>
+      <p id="results-label" class="muted">Popular right now</p>  <!-- Überschrift über den Treffern (home.js ändert den Text) -->
+      <div id="results-grid" class="grid"></div>            <!-- leer: home.js setzt hier die Film-Karten ein -->
     </section>
   </main>
 
-  <script type="module" src="/js/home.js"></script>
+  <script type="module" src="/js/home.js"></script>         <!-- lädt home.js als Modul (nötig wegen import) -->
 </body>
 </html>

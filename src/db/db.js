@@ -1,21 +1,15 @@
-// Sets up the SQLite database connection and makes sure the schema exists.
-// better-sqlite3 is synchronous, which keeps the rest of the code simple:
-// no async/await needed just to talk to the database.
+const path = require("path"); // Pfade bauen
+const fs = require("fs"); // Dateien lesen
+const Database = require("better-sqlite3"); // SQLite-Bibliothek
 
-const path = require("path");
-const fs = require("fs");
-const Database = require("better-sqlite3");
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, "..", "..", "data.sqlite"); // Datei: data.sqlite im Projektordner
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, "..", "..", "data.sqlite");
+const db = new Database(DB_PATH); // Datenbank öffnen/anlegen
+db.pragma("journal_mode = WAL"); // schnellerer Schreibmodus
+db.pragma("foreign_keys = ON"); // Fremdschlüssel aktivieren (für CASCADE)
 
-const db = new Database(DB_PATH);
-db.pragma("journal_mode = WAL");
-db.pragma("foreign_keys = ON");
+const schemaPath = path.join(__dirname, "schema.sql"); // Pfad zur schema.sql
+const schema = fs.readFileSync(schemaPath, "utf8"); // Datei als Text lesen
+db.exec(schema); // Tabellen anlegen
 
-// Run schema.sql once on startup. All statements use "IF NOT EXISTS",
-// so this is safe to run every time the server starts.
-const schemaPath = path.join(__dirname, "schema.sql");
-const schema = fs.readFileSync(schemaPath, "utf8");
-db.exec(schema);
-
-module.exports = db;
+module.exports = db; // Verbindung für andere Dateien

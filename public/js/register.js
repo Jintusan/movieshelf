@@ -1,21 +1,21 @@
-import { api } from "./api.js";
-import { renderNav } from "./nav.js";
+import { api } from "./api.js"; // Boten zum Backend
+import { renderNav } from "./nav.js"; // Navigationsleiste
 
-renderNav();
+renderNav(); // beim Laden: Navigationsleiste bauen
 
-document.getElementById("register-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const username = document.getElementById("username").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const errorEl = document.getElementById("error");
-  errorEl.hidden = true;
+document.getElementById("register-form").addEventListener("submit", async (e) => { // beim Absenden des Registrierungs-Formulars
+  e.preventDefault(); // Seite nicht neu laden
+  const username = document.getElementById("username").value.trim(); // Benutzername, Leerzeichen am Rand weg
+  const email = document.getElementById("email").value.trim(); // E-Mail, Leerzeichen am Rand weg
+  const password = document.getElementById("password").value; // Passwort
+  const errorEl = document.getElementById("error"); // das rote Fehler-Feld
+  errorEl.hidden = true; // alten Fehler erstmal verstecken
 
-  try {
-    await api("/api/auth/register", { method: "POST", body: { username, email, password } });
-    window.location.href = "/pages/index.html";
-  } catch (err) {
-    errorEl.textContent = err.message;
-    errorEl.hidden = false;
+  try { // Registrieren versuchen
+    await api("/api/auth/register", { method: "POST", body: { username, email, password } }); // Daten ans Backend schicken
+    window.location.href = "/pages/index.html"; // Erfolg: zur Startseite (Backend hat dich schon eingeloggt)
+  } catch (err) { // Backend hat einen Fehler gemeldet (z.B. 409 Name vergeben)
+    errorEl.textContent = err.message; // Meldung vom Backend eintragen
+    errorEl.hidden = false; // Fehler-Feld anzeigen
   }
 });

@@ -1,29 +1,29 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/css/style.css" />
+<!doctype html>                                             <!-- sagt dem Browser: das ist modernes HTML5 -->
+<html lang="en">                                            <!-- Wurzel der Seite, Sprache Englisch -->
+<head>                                                      <!-- unsichtbarer Kopfbereich: Einstellungen für den Browser -->
+  <meta charset="utf-8" />                                  <!-- Zeichensatz, damit Umlaute und Sonderzeichen stimmen -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  <!-- passt die Seite an Handy-Bildschirme an -->
+  <title>Login</title>                                      <!-- Text im Browser-Tab -->
+  <link rel="icon" href="data:,">                           <!-- leeres Tab-Icon, verhindert eine Fehlermeldung wegen fehlendem favicon -->
+  <link rel="stylesheet" href="/css/style.css" />           <!-- bindet das Aussehen (CSS) ein -->
 </head>
-<body>
-  <header>
-    <h1>🎬 MovieApp</h1>
-    <nav id="nav"></nav>
+<body>                                                      <!-- sichtbarer Bereich der Seite -->
+  <header>                                                  <!-- Kopfzeile -->
+    <h1>🎬 MovieApp</h1>                                    <!-- Titel -->
+    <nav id="nav"></nav>                                    <!-- leer: nav.js füllt hier die Navigationsleiste -->
   </header>
 
-  <main>
-    <h2>Login</h2>
-    <form id="login-form" class="stacked">
-      <input id="username" type="text" placeholder="Username" required />
-      <input id="password" type="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-      <p id="error" class="error" hidden></p>
+  <main>                                                    <!-- Hauptinhalt -->
+    <h2>Login</h2>                                          <!-- Überschrift -->
+    <form id="login-form" class="stacked">                  <!-- Login-Formular, login.js hängt sich ans submit-Ereignis, stacked = Felder untereinander -->
+      <input id="username" type="text" placeholder="Username" required />  <!-- Benutzername, required = Pflichtfeld -->
+      <input id="password" type="password" placeholder="Password" required />  <!-- Passwort, type=password zeigt Punkte -->
+      <button type="submit">Login</button>                  <!-- Button zum Absenden -->
+      <p id="error" class="error" hidden></p>               <!-- Fehlermeldung, anfangs versteckt (login.js zeigt sie bei Fehler) -->
     </form>
-    <p class="muted">No account yet? <a href="/pages/register.html">Register here</a>.</p>
+    <p class="muted">No account yet? <a href="/pages/register.html">Register here</a>.</p>  <!-- Link zur Registrierung -->
   </main>
 
-  <script type="module" src="/js/login.js"></script>
+  <script type="module" src="/js/login.js"></script>        <!-- lädt login.js als Modul -->
 </body>
 </html>

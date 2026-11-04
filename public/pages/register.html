@@ -1,30 +1,30 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Register</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/css/style.css" />
+<!doctype html>                                             <!-- sagt dem Browser: das ist modernes HTML5 -->
+<html lang="en">                                            <!-- Wurzel der Seite, Sprache Englisch -->
+<head>                                                      <!-- unsichtbarer Kopfbereich: Einstellungen für den Browser -->
+  <meta charset="utf-8" />                                  <!-- Zeichensatz, damit Umlaute und Sonderzeichen stimmen -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  <!-- passt die Seite an Handy-Bildschirme an -->
+  <title>Register</title>                                   <!-- Text im Browser-Tab -->
+  <link rel="icon" href="data:,">                           <!-- leeres Tab-Icon, verhindert eine Fehlermeldung wegen fehlendem favicon -->
+  <link rel="stylesheet" href="/css/style.css" />           <!-- bindet das Aussehen (CSS) ein -->
 </head>
-<body>
-  <header>
-    <h1>🎬 MovieApp</h1>
-    <nav id="nav"></nav>
+<body>                                                      <!-- sichtbarer Bereich der Seite -->
+  <header>                                                  <!-- Kopfzeile -->
+    <h1>🎬 MovieApp</h1>                                    <!-- Titel -->
+    <nav id="nav"></nav>                                    <!-- leer: nav.js füllt hier die Navigationsleiste -->
   </header>
 
-  <main>
-    <h2>Create an account</h2>
-    <form id="register-form" class="stacked">
-      <input id="username" type="text" placeholder="Username" required />
-      <input id="email" type="email" placeholder="Email" required />
-      <input id="password" type="password" placeholder="Password (min. 6 characters)" minlength="6" required />
-      <button type="submit">Register</button>
-      <p id="error" class="error" hidden></p>
+  <main>                                                    <!-- Hauptinhalt -->
+    <h2>Create an account</h2>                              <!-- Überschrift -->
+    <form id="register-form" class="stacked">               <!-- Registrierungs-Formular, register.js hängt sich ans submit-Ereignis -->
+      <input id="username" type="text" placeholder="Username" required />  <!-- Benutzername, Pflichtfeld -->
+      <input id="email" type="email" placeholder="Email" required />  <!-- E-Mail, Browser prüft das Format (@) -->
+      <input id="password" type="password" placeholder="Password (min. 6 characters)" minlength="6" required />  <!-- Passwort, mind. 6 Zeichen (nur Komfort, echte Prüfung im Backend) -->
+      <button type="submit">Register</button>               <!-- Button zum Absenden -->
+      <p id="error" class="error" hidden></p>               <!-- Fehlermeldung, anfangs versteckt -->
     </form>
-    <p class="muted">Already have an account? <a href="/pages/login.html">Login here</a>.</p>
+    <p class="muted">Already have an account? <a href="/pages/login.html">Login here</a>.</p>  <!-- Link zum Login -->
   </main>
 
-  <script type="module" src="/js/register.js"></script>
+  <script type="module" src="/js/register.js"></script>     <!-- lädt register.js als Modul -->
 </body>
 </html>

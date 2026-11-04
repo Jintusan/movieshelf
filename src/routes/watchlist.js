@@ -1,74 +1,61 @@
-// Feature 2 - Personal Watchlist (Role: User)
-//
-// The database only ever stores the TMDB movie id per (user, movie) pair -
-// see src/db/schema.sql. Whenever the watchlist is displayed, we fetch the
-// current movie data from TMDB for each stored id, so title/poster/rating
-// are always up to date instead of a stale local copy.
-//
-// Every route here uses requireAuth, so a guest gets a clean 401 instead
-// of being able to touch someone's watchlist.
+const express = require("express"); // Webserver-Bibliothek
+const db = require("../db/db"); // Datenbank-Verbindung
+const tmdb = require("../services/tmdb"); // TMDB-Funktionen
+const { requireAuth } = require("../middleware/auth"); // Wächter: nur eingeloggt
 
-const express = require("express");
-const db = require("../db/db");
-const tmdb = require("../services/tmdb");
-const { requireAuth } = require("../middleware/auth");
+const router = express.Router(); // Mini-Router für /api/watchlist
+router.use(requireAuth); // gilt für ALLE Routen hier: ohne Login 401
 
-const router = express.Router();
-router.use(requireAuth);
+router.get("/", async (req, res) => { // GET /api/watchlist
+  const rows = db // meine Einträge aus der Datenbank
+    .prepare("SELECT movieId, addedAt FROM watchlist WHERE userId = ? ORDER BY addedAt DESC") // nur meine, neueste zuerst
+    .all(req.session.user.id); // alle Zeilen holen; ? = meine User-ID aus der Session
 
-// GET /api/watchlist  -> the current user's watchlist, with live movie data
-router.get("/", async (req, res) => {
-  const rows = db
-    .prepare("SELECT movieId, addedAt FROM watchlist WHERE userId = ? ORDER BY addedAt DESC")
-    .all(req.session.user.id);
-
-  try {
-    const items = await Promise.all(
-      rows.map(async (row) => ({
-        movie: await tmdb.getMovieById(row.movieId),
-        addedAt: row.addedAt,
+  try { // Versuch ...
+    const items = await Promise.all( // alle Filme gleichzeitig holen
+      rows.map(async (row) => ({ // pro Eintrag ein Objekt bauen
+        movie: await tmdb.getMovieById(row.movieId), // Filmdaten live von TMDB
+        addedAt: row.addedAt, // Zeitpunkt aus der Datenbank
       }))
     );
-    res.json({ watchlist: items });
-  } catch (err) {
-    console.error(err);
-    res.status(502).json({ error: "Could not reach TMDB." });
+    res.json({ watchlist: items }); // Liste zurückschicken
+  } catch (err) { // ... bei Fehler:
+    console.error(err); // in der Konsole loggen
+    res.status(502).json({ error: "Could not reach TMDB." }); // 502 = TMDB nicht erreichbar
   }
 });
 
-// POST /api/watchlist  { movieId }  -> add a movie
-router.post("/", (req, res) => {
-  const movieId = Number(req.body.movieId);
-  if (!Number.isInteger(movieId)) {
-    return res.status(400).json({ error: "movieId (number) is required." });
+router.post("/", (req, res) => { // POST /api/watchlist
+  const movieId = Number(req.body.movieId); // Film-ID aus dem Body -> Zahl
+  if (!Number.isInteger(movieId)) { // keine ganze Zahl?
+    return res.status(400).json({ error: "movieId (number) is required." }); // 400 = falsche Eingabe
   }
 
-  try {
-    db.prepare("INSERT INTO watchlist (userId, movieId) VALUES (?, ?)").run(
-      req.session.user.id,
-      movieId
+  try { // Versuch ...
+    db.prepare("INSERT INTO watchlist (userId, movieId) VALUES (?, ?)").run( // Eintrag speichern
+      req.session.user.id, // meine User-ID aus der Session
+      movieId // die Film-ID
     );
-    res.status(201).json({ ok: true });
-  } catch (err) {
-    if (err.code === "SQLITE_CONSTRAINT_UNIQUE") {
-      return res.status(409).json({ error: "Movie is already in your watchlist." });
+    res.status(201).json({ ok: true }); // 201 = erstellt
+  } catch (err) { // ... bei Fehler:
+    if (err.code === "SQLITE_CONSTRAINT_UNIQUE") { // Film schon auf der Liste?
+      return res.status(409).json({ error: "Movie is already in your watchlist." }); // 409 = Konflikt
     }
-    console.error(err);
-    res.status(500).json({ error: "Internal server error." });
+    console.error(err); // anderer Fehler: loggen
+    res.status(500).json({ error: "Internal server error." }); // 500 = Serverfehler
   }
 });
 
-// DELETE /api/watchlist/:movieId  -> remove a movie
-router.delete("/:movieId", (req, res) => {
-  const movieId = Number(req.params.movieId);
-  const result = db
-    .prepare("DELETE FROM watchlist WHERE userId = ? AND movieId = ?")
-    .run(req.session.user.id, movieId);
+router.delete("/:movieId", (req, res) => { // DELETE /api/watchlist/603
+  const movieId = Number(req.params.movieId); // Film-ID aus der Adresse -> Zahl
+  const result = db // Eintrag löschen
+    .prepare("DELETE FROM watchlist WHERE userId = ? AND movieId = ?") // nur MEIN Eintrag
+    .run(req.session.user.id, movieId); // ausführen
 
-  if (result.changes === 0) {
-    return res.status(404).json({ error: "Movie was not in your watchlist." });
+  if (result.changes === 0) { // nichts gelöscht?
+    return res.status(404).json({ error: "Movie was not in your watchlist." }); // 404 = nicht gefunden
   }
-  res.json({ ok: true });
+  res.json({ ok: true }); // Erfolg melden
 });
 
-module.exports = router;
+module.exports = router; // Router exportieren

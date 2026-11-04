@@ -1,117 +1,117 @@
-:root {
-  --bg: #0f1115;
-  --card: #1a1d24;
-  --text: #e8e8ea;
-  --muted: #9a9ea7;
-  --accent: #4f8cff;
-  --danger: #ff5f6d;
-  --border: #2a2e37;
+:root {                                                     /* gilt für die ganze Seite: hier stehen die Farben als Variablen */
+  --bg: #0f1115;                                            /* Seitenhintergrund (fast schwarz) */
+  --card: #1a1d24;                                          /* Hintergrund von Karten und Eingabefeldern */
+  --text: #e8e8ea;                                          /* normale Textfarbe (hellgrau) */
+  --muted: #9a9ea7;                                         /* gedämpfte Textfarbe für Nebensachen */
+  --accent: #4f8cff;                                        /* Hauptfarbe (blau) für Buttons und Hover */
+  --danger: #ff5f6d;                                        /* Warnfarbe (rot) für Löschen und Fehler */
+  --border: #2a2e37;                                        /* Farbe der Rahmenlinien */
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; }                               /* alle Elemente: Padding und Rand zählen zur Breite dazu */
 
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+body {                                                      /* die ganze Seite */
+  margin: 0;                                                /* kein Standardabstand am Rand */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;  /* Systemschrift des Geräts */
+  background: var(--bg);                                    /* dunkler Hintergrund */
+  color: var(--text);                                       /* helle Schrift */
 }
 
-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+header {                                                    /* die Kopfzeile mit Titel und Navigation */
+  padding: 1rem 1.5rem;                                     /* Innenabstand */
+  border-bottom: 1px solid var(--border);                   /* Linie unten */
+  display: flex;                                            /* Kinder nebeneinander */
+  align-items: center;                                      /* vertikal mittig */
+  justify-content: space-between;                           /* Titel links, Navigation rechts */
 }
 
-header h1 { font-size: 1.2rem; margin: 0; }
+header h1 { font-size: 1.2rem; margin: 0; }                 /* Titel "MovieApp": Größe, kein Abstand */
 
-nav { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-nav a, nav .link-button {
-  color: var(--text);
-  text-decoration: none;
-  background: none;
-  border: none;
-  font: inherit;
-  cursor: pointer;
+nav { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }  /* Links nebeneinander mit Abstand, brechen bei Platzmangel um */
+nav a, nav .link-button {                                   /* Links und Logout-Button in der Navigation */
+  color: var(--text);                                       /* Textfarbe */
+  text-decoration: none;                                    /* keine Unterstreichung */
+  background: none;                                         /* kein Button-Hintergrund */
+  border: none;                                             /* kein Rahmen */
+  font: inherit;                                            /* Schrift vom Umfeld übernehmen */
+  cursor: pointer;                                          /* Hand-Cursor */
 }
-nav a:hover, nav .link-button:hover { color: var(--accent); }
-.nav-user { color: var(--muted); font-size: 0.9rem; }
+nav a:hover, nav .link-button:hover { color: var(--accent); }  /* beim Drüberfahren: blau */
+.nav-user { color: var(--muted); font-size: 0.9rem; }       /* "Hi, Name (Rolle)": grau und kleiner */
 
-main { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+main { max-width: 960px; margin: 0 auto; padding: 1.5rem; }  /* Inhalt: max. 960px breit, zentriert */
 
-h2 { font-size: 1.1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2rem; }
+h2 { font-size: 1.1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2rem; }  /* Überschriften: grau, GROSSBUCHSTABEN */
 
-.search-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-.search-bar input {
-  flex: 1;
-  padding: 0.6rem 0.8rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-}
-
-button, .btn {
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
-  font: inherit;
-}
-button.secondary { background: var(--card); color: var(--text); }
-button.danger { background: var(--danger); }
-button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
-
-.movie-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: var(--border); }
-.movie-card .body { padding: 0.6rem; flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
-.movie-card a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
-.movie-card .meta { color: var(--muted); font-size: 0.8rem; }
-
-.movie-detail { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-.movie-detail img { width: 260px; border-radius: 8px; }
-.movie-detail .info { flex: 1; min-width: 260px; }
-.movie-detail .badges span {
-  display: inline-block;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.15rem 0.6rem;
-  font-size: 0.8rem;
-  margin: 0.15rem 0.3rem 0.15rem 0;
-  color: var(--muted);
+.search-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }  /* Suchfeld und Button nebeneinander */
+.search-bar input {                                         /* das Suchfeld */
+  flex: 1;                                                  /* füllt den restlichen Platz */
+  padding: 0.6rem 0.8rem;                                   /* Innenabstand */
+  border-radius: 6px;                                       /* runde Ecken */
+  border: 1px solid var(--border);                          /* Rahmen */
+  background: var(--card);                                  /* Feld-Hintergrund */
+  color: var(--text);                                       /* Schriftfarbe */
 }
 
-form.stacked { display: flex; flex-direction: column; gap: 0.7rem; max-width: 360px; }
-form.stacked input, form.stacked textarea, form.stacked select {
-  padding: 0.6rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  font: inherit;
+button, .btn {                                              /* alle Buttons: Grundaussehen */
+  padding: 0.5rem 1rem;                                     /* Innenabstand */
+  border-radius: 6px;                                       /* runde Ecken */
+  border: 1px solid var(--border);                          /* Rahmen */
+  background: var(--accent);                                /* blau */
+  color: white;                                             /* weiße Schrift */
+  cursor: pointer;                                          /* Hand-Cursor */
+  font: inherit;                                            /* Schrift vom Umfeld */
+}
+button.secondary { background: var(--card); color: var(--text); }  /* grauer Button (z.B. "In Watchlist") */
+button.danger { background: var(--danger); }                /* roter Button (z.B. "Remove", "Delete") */
+button:disabled { opacity: 0.5; cursor: not-allowed; }      /* gesperrter Button: halbtransparent */
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }  /* Karten-Raster: so viele Spalten wie mit mind. 150px passen */
+
+.movie-card {                                               /* die Film-Karte (äußere Box) */
+  background: var(--card);                                  /* Karten-Hintergrund */
+  border: 1px solid var(--border);                          /* Rahmen */
+  border-radius: 8px;                                       /* runde Ecken */
+  overflow: hidden;                                         /* nichts ragt über die runden Ecken */
+  display: flex;                                            /* Poster und Text ... */
+  flex-direction: column;                                   /* ... untereinander */
+}
+.movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: var(--border); }  /* Poster: volle Breite, Format 2:3, ohne Verzerrung */
+.movie-card .body { padding: 0.6rem; flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }  /* Textbereich unter dem Poster */
+.movie-card a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.95rem; }  /* Titel-Link: fett, nicht unterstrichen */
+.movie-card .meta { color: var(--muted); font-size: 0.8rem; }  /* Datum und Bewertung: grau, klein */
+
+.movie-detail { display: flex; gap: 1.5rem; flex-wrap: wrap; }  /* Detailseite: Poster und Info nebeneinander, bei Platzmangel untereinander */
+.movie-detail img { width: 260px; border-radius: 8px; }     /* großes Poster */
+.movie-detail .info { flex: 1; min-width: 260px; }          /* Infobereich füllt den Rest */
+.movie-detail .badges span {                                /* die kleinen runden Etiketten */
+  display: inline-block;                                    /* nebeneinander, aber mit Innenabstand */
+  background: var(--card);                                  /* Hintergrund */
+  border: 1px solid var(--border);                          /* Rahmen */
+  border-radius: 999px;                                     /* ganz rund (Pillenform) */
+  padding: 0.15rem 0.6rem;                                  /* Innenabstand */
+  font-size: 0.8rem;                                        /* klein */
+  margin: 0.15rem 0.3rem 0.15rem 0;                         /* Abstand zu den anderen Etiketten */
+  color: var(--muted);                                      /* grau */
 }
 
-.review {
-  border-bottom: 1px solid var(--border);
-  padding: 0.8rem 0;
+form.stacked { display: flex; flex-direction: column; gap: 0.7rem; max-width: 360px; }  /* Formular: Felder untereinander, max. 360px breit */
+form.stacked input, form.stacked textarea, form.stacked select {  /* alle Eingabefelder im Formular */
+  padding: 0.6rem;                                          /* Innenabstand */
+  border-radius: 6px;                                       /* runde Ecken */
+  border: 1px solid var(--border);                          /* Rahmen */
+  background: var(--card);                                  /* Hintergrund */
+  color: var(--text);                                       /* Schriftfarbe */
+  font: inherit;                                            /* Schrift vom Umfeld */
 }
-.review .stars { color: #ffb400; }
-.review .meta { color: var(--muted); font-size: 0.8rem; }
 
-.error { color: var(--danger); margin: 0.5rem 0; }
-.muted { color: var(--muted); }
-.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+.review {                                                   /* eine Review */
+  border-bottom: 1px solid var(--border);                   /* Trennlinie unten */
+  padding: 0.8rem 0;                                        /* Abstand oben und unten */
+}
+.review .stars { color: #ffb400; }                          /* Sterne: gelb */
+.review .meta { color: var(--muted); font-size: 0.8rem; }   /* Autor und Datum: grau, klein */
+
+.error { color: var(--danger); margin: 0.5rem 0; }          /* Fehlermeldung: rot */
+.muted { color: var(--muted); }                             /* Hinweistext: grau */
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }  /* Buttons nebeneinander mit Abstand */

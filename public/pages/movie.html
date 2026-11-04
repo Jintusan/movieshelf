@@ -1,28 +1,28 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Movie details</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/css/style.css" />
+<!doctype html>                                             <!-- sagt dem Browser: das ist modernes HTML5 -->
+<html lang="en">                                            <!-- Wurzel der Seite, Sprache Englisch -->
+<head>                                                      <!-- unsichtbarer Kopfbereich: Einstellungen für den Browser -->
+  <meta charset="utf-8" />                                  <!-- Zeichensatz, damit Umlaute und Sonderzeichen stimmen -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  <!-- passt die Seite an Handy-Bildschirme an -->
+  <title>Movie details</title>                              <!-- Text im Browser-Tab -->
+  <link rel="icon" href="data:,">                           <!-- leeres Tab-Icon, verhindert eine Fehlermeldung wegen fehlendem favicon -->
+  <link rel="stylesheet" href="/css/style.css" />           <!-- bindet das Aussehen (CSS) ein -->
 </head>
-<body>
-  <header>
-    <h1>🎬 MovieApp</h1>
-    <nav id="nav"></nav>
+<body>                                                      <!-- sichtbarer Bereich der Seite -->
+  <header>                                                  <!-- Kopfzeile -->
+    <h1>🎬 MovieApp</h1>                                    <!-- Titel -->
+    <nav id="nav"></nav>                                    <!-- leer: nav.js füllt hier die Navigationsleiste -->
   </header>
 
-  <main>
-    <div id="movie-root"><p class="muted">Loading...</p></div>
+  <main>                                                    <!-- Hauptinhalt -->
+    <div id="movie-root"><p class="muted">Loading...</p></div>  <!-- movie.js ersetzt "Loading..." durch Poster, Titel, Infos, Buttons -->
 
-    <section>
-      <h2>Reviews</h2>
-      <div id="review-form-root"></div>
-      <div id="reviews-list"></div>
+    <section>                                               <!-- Review-Bereich -->
+      <h2>Reviews</h2>                                      <!-- Überschrift -->
+      <div id="review-form-root"></div>                     <!-- leer: movie.js setzt hier das Review-Formular ein (nur eingeloggt) -->
+      <div id="reviews-list"></div>                         <!-- leer: movie.js setzt hier alle Reviews ein -->
     </section>
   </main>
 
-  <script type="module" src="/js/movie.js"></script>
+  <script type="module" src="/js/movie.js"></script>        <!-- lädt movie.js als Modul -->
 </body>
 </html>

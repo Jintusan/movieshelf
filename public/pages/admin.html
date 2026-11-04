@@ -1,30 +1,30 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Featured Movies</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/css/style.css" />
+<!doctype html>                                             <!-- sagt dem Browser: das ist modernes HTML5 -->
+<html lang="en">                                            <!-- Wurzel der Seite, Sprache Englisch -->
+<head>                                                      <!-- unsichtbarer Kopfbereich: Einstellungen für den Browser -->
+  <meta charset="utf-8" />                                  <!-- Zeichensatz, damit Umlaute und Sonderzeichen stimmen -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  <!-- passt die Seite an Handy-Bildschirme an -->
+  <title>Admin - Featured Movies</title>                    <!-- Text im Browser-Tab -->
+  <link rel="icon" href="data:,">                           <!-- leeres Tab-Icon, verhindert eine Fehlermeldung wegen fehlendem favicon -->
+  <link rel="stylesheet" href="/css/style.css" />           <!-- bindet das Aussehen (CSS) ein -->
 </head>
-<body>
-  <header>
-    <h1>🎬 MovieApp</h1>
-    <nav id="nav"></nav>
+<body>                                                      <!-- sichtbarer Bereich der Seite -->
+  <header>                                                  <!-- Kopfzeile -->
+    <h1>🎬 MovieApp</h1>                                    <!-- Titel -->
+    <nav id="nav"></nav>                                    <!-- leer: nav.js füllt hier die Navigationsleiste -->
   </header>
 
-  <main>
-    <h2>Currently Featured</h2>
-    <div id="featured-grid" class="grid"></div>
+  <main>                                                    <!-- Hauptinhalt -->
+    <h2>Currently Featured</h2>                             <!-- Überschrift -->
+    <div id="featured-grid" class="grid"></div>             <!-- leer: admin.js setzt hier die Featured-Filme mit Remove-Button ein -->
 
-    <h2>Search &amp; Add a Movie</h2>
-    <form id="search-form" class="search-bar">
-      <input id="search-input" type="text" placeholder="Search movie title..." />
-      <button type="submit">Search</button>
+    <h2>Search &amp; Add a Movie</h2>                       <!-- Überschrift (&amp; = das Zeichen &) -->
+    <form id="search-form" class="search-bar">              <!-- Suchformular, admin.js hängt sich ans submit-Ereignis -->
+      <input id="search-input" type="text" placeholder="Search movie title..." />  <!-- Eingabefeld -->
+      <button type="submit">Search</button>                 <!-- Button zum Absenden -->
     </form>
-    <div id="results-grid" class="grid"></div>
+    <div id="results-grid" class="grid"></div>              <!-- leer: admin.js setzt hier die Treffer mit "+ Feature" ein -->
   </main>
 
-  <script type="module" src="/js/admin.js"></script>
+  <script type="module" src="/js/admin.js"></script>        <!-- lädt admin.js als Modul -->
 </body>
 </html>

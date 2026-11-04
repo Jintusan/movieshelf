@@ -1,107 +1,89 @@
-// One small module that wraps every call to the TMDB REST API.
-//
-// Why centralise it here instead of calling fetch() from each route file:
-//   - the API key is read from process.env once, here, and never sent to
-//     the browser (the frontend only ever talks to OUR /api/... routes)
-//   - all TMDB calls are async (fetch), matching the "asynchronous
-//     client-server / server-to-API communication" requirement
-//   - a tiny in-memory cache avoids hitting TMDB again for a movie we
-//     already fetched a few minutes ago (relevant for the watchlist and
-//     featured list, which look up several movie ids on every page view)
+const TMDB_BASE_URL = "https://api.themoviedb.org/3"; // Basisadresse der TMDB-API
+const CACHE_TTL_MS = 5 * 60 * 1000; // Cache gilt 5 Minuten (in ms)
 
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const cache = new Map(); // Zwischenspeicher: Schlüssel -> { data, expiresAt }
 
-// key -> { data, expiresAt }
-const cache = new Map();
-
-function getCached(key) {
-  const entry = cache.get(key);
-  if (!entry) return null;
-  if (Date.now() > entry.expiresAt) {
-    cache.delete(key);
-    return null;
+function getCached(key) { // Cache lesen
+  const entry = cache.get(key); // Eintrag holen
+  if (!entry) return null; // nichts gespeichert
+  if (Date.now() > entry.expiresAt) { // abgelaufen?
+    cache.delete(key); // Eintrag löschen
+    return null; // zählt als "nicht vorhanden"
   }
-  return entry.data;
+  return entry.data; // noch frisch -> Daten zurück
 }
 
-function setCached(key, data) {
-  cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+function setCached(key, data) { // Cache schreiben
+  cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS }); // Daten + Ablaufzeit merken
 }
 
-async function tmdbFetch(path, params = {}) {
-  const apiKey = process.env.TMDB_API_KEY;
-  if (!apiKey) {
-    throw new Error("TMDB_API_KEY is not set. Copy .env.example to .env and add your key.");
+async function tmdbFetch(path, params = {}) { // EIN Ort für alle TMDB-Aufrufe
+  const apiKey = process.env.TMDB_API_KEY; // Key aus .env
+  if (!apiKey) { // Key fehlt?
+    throw new Error("TMDB_API_KEY is not set. Copy .env.example to .env and add your key."); // Fehler werfen
   }
 
-  const url = new URL(TMDB_BASE_URL + path);
-  url.searchParams.set("api_key", apiKey);
-  for (const [key, value] of Object.entries(params)) {
-    url.searchParams.set(key, value);
+  const url = new URL(TMDB_BASE_URL + path); // komplette Adresse bauen
+  url.searchParams.set("api_key", apiKey); // ?api_key=... anhängen
+  for (const [key, value] of Object.entries(params)) { // alle weiteren Parameter
+    url.searchParams.set(key, value); // ...&query=...&page=...
   }
 
-  const response = await fetch(url); // Node 18+ has fetch built in.
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`TMDB request failed (${response.status}): ${body}`);
+  const response = await fetch(url); // HTTP-Anfrage an TMDB, warten
+  if (!response.ok) { // Status nicht 200-299?
+    const body = await response.text(); // Fehlertext lesen
+    throw new Error(`TMDB request failed (${response.status}): ${body}`); // Fehler werfen
   }
-  return response.json();
+  return response.json(); // Antwort als Objekt zurück
 }
 
-// Converts one TMDB movie object into the shape our app actually uses.
-// This is also the one place that documents which TMDB fields we rely on
-// (see the concept document's Resource Description table) and where the
-// TMDB date string gets turned into a real Date when needed.
-function mapMovie(raw) {
+function mapMovie(raw) { // TMDB-Film -> unser Film-Objekt
   return {
-    id: raw.id,                                   // Number
-    title: raw.title,                              // String
-    overview: raw.overview,                        // String
-    releaseDate: raw.release_date || null,         // Date (ISO string "YYYY-MM-DD")
-    voteAverage: raw.vote_average,                  // Number
-    voteCount: raw.vote_count,                      // Number
-    popularity: raw.popularity,                     // Number
-    adult: !!raw.adult,                             // Boolean
-    video: !!raw.video,                             // Boolean
-    originalLanguage: raw.original_language,        // String
-    posterUrl: raw.poster_path
-      ? `https://image.tmdb.org/t/p/w342${raw.poster_path}`
-      : null,
+    id: raw.id, // Number
+    title: raw.title, // String
+    overview: raw.overview, // String
+    releaseDate: raw.release_date || null, // Date ("YYYY-MM-DD"), sonst null
+    voteAverage: raw.vote_average, // Number
+    voteCount: raw.vote_count, // Number
+    popularity: raw.popularity, // Number
+    adult: !!raw.adult, // Boolean (!! macht true/false daraus)
+    video: !!raw.video, // Boolean
+    originalLanguage: raw.original_language, // String
+    posterUrl: raw.poster_path // Poster vorhanden?
+      ? `https://image.tmdb.org/t/p/w342${raw.poster_path}` // ja: volle Bild-URL
+      : null, // nein: null
   };
 }
 
-// Turns the stored ISO date string into a real JS Date object, e.g. for
-// sorting a list of movies by release date.
-function toDate(movie) {
-  return movie.releaseDate ? new Date(movie.releaseDate) : null;
+function toDate(movie) { // Datum-String -> echtes Date-Objekt
+  return movie.releaseDate ? new Date(movie.releaseDate) : null; // sonst null
 }
 
-async function searchMovies(query) {
-  const data = await tmdbFetch("/search/movie", { query, include_adult: "false" });
-  return data.results.map(mapMovie);
+async function searchMovies(query) { // Filme suchen
+  const data = await tmdbFetch("/search/movie", { query, include_adult: "false" }); // Suche ohne Adult
+  return data.results.map(mapMovie); // jedes Ergebnis umwandeln
 }
 
-async function getPopularMovies(page = 1) {
-  const cacheKey = `popular:${page}`;
-  const cached = getCached(cacheKey);
-  if (cached) return cached;
+async function getPopularMovies(page = 1) { // beliebte Filme (Seite 1)
+  const cacheKey = `popular:${page}`; // Cache-Schlüssel
+  const cached = getCached(cacheKey); // schon im Cache?
+  if (cached) return cached; // ja: kein TMDB-Aufruf nötig
 
-  const data = await tmdbFetch("/movie/popular", { page });
-  const movies = data.results.map(mapMovie);
-  setCached(cacheKey, movies);
-  return movies;
+  const data = await tmdbFetch("/movie/popular", { page }); // nein: bei TMDB holen
+  const movies = data.results.map(mapMovie); // umwandeln
+  setCached(cacheKey, movies); // 5 Minuten merken
+  return movies; // zurückgeben
 }
 
-async function getMovieById(id) {
-  const cacheKey = `movie:${id}`;
-  const cached = getCached(cacheKey);
-  if (cached) return cached;
+async function getMovieById(id) { // ein Film per ID
+  const cacheKey = `movie:${id}`; // Cache-Schlüssel
+  const cached = getCached(cacheKey); // schon im Cache?
+  if (cached) return cached; // ja: kein TMDB-Aufruf nötig
 
-  const raw = await tmdbFetch(`/movie/${id}`);
-  const movie = mapMovie(raw);
-  setCached(cacheKey, movie);
-  return movie;
+  const raw = await tmdbFetch(`/movie/${id}`); // nein: bei TMDB holen
+  const movie = mapMovie(raw); // umwandeln
+  setCached(cacheKey, movie); // 5 Minuten merken
+  return movie; // zurückgeben
 }
 
-module.exports = { searchMovies, getPopularMovies, getMovieById, mapMovie, toDate };
+module.exports = { searchMovies, getPopularMovies, getMovieById, mapMovie, toDate }; // nach außen freigeben

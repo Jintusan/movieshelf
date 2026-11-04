@@ -1,26 +1,26 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Profile</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/css/style.css" />
+<!doctype html>                                             <!-- sagt dem Browser: das ist modernes HTML5 -->
+<html lang="en">                                            <!-- Wurzel der Seite, Sprache Englisch -->
+<head>                                                      <!-- unsichtbarer Kopfbereich: Einstellungen für den Browser -->
+  <meta charset="utf-8" />                                  <!-- Zeichensatz, damit Umlaute und Sonderzeichen stimmen -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  <!-- passt die Seite an Handy-Bildschirme an -->
+  <title>My Profile</title>                                 <!-- Text im Browser-Tab -->
+  <link rel="icon" href="data:,">                           <!-- leeres Tab-Icon, verhindert eine Fehlermeldung wegen fehlendem favicon -->
+  <link rel="stylesheet" href="/css/style.css" />           <!-- bindet das Aussehen (CSS) ein -->
 </head>
-<body>
-  <header>
-    <h1>🎬 MovieApp</h1>
-    <nav id="nav"></nav>
+<body>                                                      <!-- sichtbarer Bereich der Seite -->
+  <header>                                                  <!-- Kopfzeile -->
+    <h1>🎬 MovieApp</h1>                                    <!-- Titel -->
+    <nav id="nav"></nav>                                    <!-- leer: nav.js füllt hier die Navigationsleiste -->
   </header>
 
-  <main>
-    <h2>My Watchlist</h2>
-    <div id="watchlist-grid" class="grid"></div>
+  <main>                                                    <!-- Hauptinhalt -->
+    <h2>My Watchlist</h2>                                   <!-- Überschrift -->
+    <div id="watchlist-grid" class="grid"></div>            <!-- leer: profile.js setzt hier meine Watchlist-Karten ein -->
 
-    <h2>My Reviews</h2>
-    <div id="reviews-list"></div>
+    <h2>My Reviews</h2>                                     <!-- Überschrift -->
+    <div id="reviews-list"></div>                           <!-- leer: profile.js setzt hier meine Reviews ein -->
   </main>
 
-  <script type="module" src="/js/profile.js"></script>
+  <script type="module" src="/js/profile.js"></script>      <!-- lädt profile.js als Modul -->
 </body>
 </html>
